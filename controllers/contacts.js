@@ -73,7 +73,8 @@ const updateContact = async (req, res, next) => {
 
 const updateStatusContact = async (req, res, next) => {
   try {
-    if (!Object.keys(req.body).length) {
+    const { error } = schemas.updateFavoriteSchema.validate(req.body);
+    if (error) {
       throw HttpError(400, `missing field favorite`);
     }
     const { id } = req.params;
