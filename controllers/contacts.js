@@ -4,7 +4,21 @@ const schemas = require("../schemas/contacts");
 
 const listContacts = async (req, res, next) => {
   try {
-    const result = await Contact.find();
+    const { _id: owner } = req.user;
+    const { page = 1, limit = 20, favorite } = req.query;
+    const skip = (page - 1) * limit;
+    const filter = { owner };
+    if (favorite) {
+      filter.favorite = favorite === "true";
+    }
+    const result = await Contact.find(
+      filter,
+      "name email phone favorite owner",
+      {
+        skip,
+        limit,
+      }
+    );
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -26,7 +40,8 @@ const getContactById = async (req, res, next) => {
 
 const addContact = async (req, res, next) => {
   try {
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    const result = await Contact.create({ ...req.body, owner });
     res.status(201).json(result);
   } catch (error) {
     next(error);
