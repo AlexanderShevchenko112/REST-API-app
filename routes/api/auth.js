@@ -7,6 +7,12 @@ const auth = require("../../middlewares/auth");
 const upload = require("../../middlewares/upload");
 
 router.post("/register", validateBody(schemas.registerSchema), ctrl.register);
+router.get("/verify/:verificationToken", ctrl.verifyEmail);
+router.post(
+  "/verify",
+  validateBody(schemas.emailSchema),
+  ctrl.resendVerifyEmail
+);
 router.post("/login", validateBody(schemas.loginschema), ctrl.login);
 router.get("/current", auth, ctrl.getCurrent);
 router.post("/logout", auth, ctrl.logout);
